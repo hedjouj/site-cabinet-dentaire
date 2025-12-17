@@ -318,6 +318,27 @@ async def list_contact_messages(limit: int = Query(default=20, ge=1, le=100)):
         await db.contact_messages.find({}, {"_id": 0})
         .sort("created_at", -1)
         .to_list(limit)
+
+
+@api_router.post("/appointment-requests", response_model=AppointmentRequest)
+async def create_appointment_request(payload: AppointmentRequestCreate):
+    req = AppointmentRequest(**payload.model_dump())
+    doc = _serialize_dt_fields(req.model_dump(), ["created_at"])
+    await db.appointment_requests.insert_one(doc)
+    return req
+
+
+@api_router.get("/appointment-requests", response_model=List[AppointmentRequest])
+async def list_appointment_requests(limit: int = Query(default=20, ge=1, le=100)):
+    docs = (
+        await db.appointment_requests.find({}, {"_id": 0})
+        .sort("created_at", -1)
+        .to_list(limit)
+    )
+    return [
+        AppointmentRequest(**_parse_dt_fields(d, ["created_at"])) for d in docs
+    ]
+
     )
     return [ContactMessage(**_parse_dt_fields(d, ["created_at"])) for d in docs]
 
