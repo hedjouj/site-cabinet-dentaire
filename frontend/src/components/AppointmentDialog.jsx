@@ -32,14 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const days = [
-  "Lundi",
-  "Mardi",
-  "Mercredi",
-  "Jeudi",
-  "Vendredi",
-  "Samedi",
-];
+const days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
 const schema = z.object({
   fullname: z.string().min(2, "Nom requis"),
