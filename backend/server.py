@@ -97,6 +97,24 @@ class ContactMessage(ContactMessageCreate):
     created_at: datetime = Field(default_factory=now_utc)
 
 
+class AppointmentRequestCreate(BaseModel):
+    fullname: str
+    email: Optional[str] = None
+    phone: str
+    reason: str
+    preferred_days: List[str] = []
+    preferred_time: Optional[str] = None
+    notes: Optional[str] = None
+    consent: bool
+
+
+class AppointmentRequest(AppointmentRequestCreate):
+    model_config = ConfigDict(extra="ignore")
+
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    created_at: datetime = Field(default_factory=now_utc)
+
+
 def _serialize_dt_fields(doc: Dict[str, Any], dt_fields: List[str]) -> Dict[str, Any]:
     out = dict(doc)
     for f in dt_fields:
