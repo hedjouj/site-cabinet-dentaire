@@ -5,11 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-import { loadContent } from "@/mock";
-
-export default function Legal() {
-  const content = React.useMemo(() => loadContent(), []);
-
+export default function Legal({ content }) {
   return (
     <div className="mx-auto max-w-4xl px-4 py-14 md:px-6">
       <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
