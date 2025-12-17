@@ -143,10 +143,11 @@ function EditableText({
   );
 }
 
-export default function Home({ onAppointment }) {
-  const { content, update, reset } = usePersistedContent();
+export default function Home({ content, setContent, onAppointment }) {
+  const { update, save, reset } = useSiteContentState({ content, setContent });
   const [editMode, setEditMode] = React.useState(false);
-  const [messages, setMessages] = React.useState(() => loadMessages());
+  const [messages, setMessages] = React.useState([]);
+  const [loadingMessages, setLoadingMessages] = React.useState(true);
 
   const form = useForm({
     resolver: zodResolver(contactSchema),
