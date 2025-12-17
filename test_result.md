@@ -189,6 +189,44 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+  - task: "Appointment request creation"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ POST /api/appointment-requests creates appointment request with all required fields (fullname, email, phone, reason, preferred_days, preferred_time, notes, consent) and returns id and created_at timestamp. Tested with exact payload from review request."
+
+  - task: "Appointment request retrieval"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/appointment-requests?limit=5 returns array of appointment requests including newly created request with proper structure and sorting by created_at desc. All required fields present in response."
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 2
+  run_ui: false
+
+test_plan:
+  current_focus: []
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
 agent_communication:
   - agent: "testing"
     message: "Completed comprehensive backend API testing for dental site. All 5 requested endpoints working correctly: GET /api/ (Hello World), GET /api/site-content (returns structured content), PUT /api/site-content (updates and persists), POST /api/contact-messages (creates with proper response), GET /api/contact-messages (retrieves with limit). CORS headers properly configured. No 500 errors encountered. All tests passed successfully."
+  - agent: "testing"
+    message: "✅ NEW APPOINTMENT REQUEST ENDPOINTS TESTED SUCCESSFULLY: POST /api/appointment-requests creates requests with exact payload from review (Test Patient, test@example.com, 0612345678, Contrôle, [Lundi,Mercredi], Matin, Disponibilité limitée, consent:true) returning 200 with id and created_at. GET /api/appointment-requests?limit=5 retrieves requests sorted by created_at desc. CORS headers verified with curl: access-control-allow-origin: *, access-control-allow-credentials: true. No 500 errors. All 7 backend tests passing."
