@@ -936,9 +936,11 @@ export default function Home({ content, setContent, onAppointment }) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {messages.length === 0 ? (
+                  {loadingMessages ? (
+                    <div className="text-sm text-slate-600">Chargement…</div>
+                  ) : messages.length === 0 ? (
                     <div className="text-sm text-slate-600">
-                      Aucun message enregistré pour l’instant.
+                      Aucun message pour l’instant.
                     </div>
                   ) : (
                     <div className="space-y-3">
@@ -951,7 +953,7 @@ export default function Home({ content, setContent, onAppointment }) {
                             {m.fullname}
                           </div>
                           <div className="mt-1 text-xs text-slate-500">
-                            {new Date(m.createdAt).toLocaleString("fr-FR")}
+                            {new Date(m.created_at).toLocaleString("fr-FR")}
                           </div>
                           <div className="mt-2 text-sm text-slate-700">
                             {m.message}
@@ -962,7 +964,7 @@ export default function Home({ content, setContent, onAppointment }) {
                   )}
 
                   <div className="text-xs text-slate-500">
-                    Historique stocké en localStorage (max 20).
+                    Messages récupérés depuis le serveur (max 20).
                   </div>
                 </CardContent>
               </Card>
