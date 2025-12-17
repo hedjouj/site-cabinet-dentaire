@@ -70,6 +70,8 @@ export default function AppointmentDialog({
 
   const submitting = form.formState.isSubmitting;
 
+  const watchedDays = form.watch("preferred_days") || [];
+
   const toggleDay = (day) => {
     const cur = form.getValues("preferred_days") || [];
     const next = cur.includes(day) ? cur.filter((d) => d !== day) : [...cur, day];
