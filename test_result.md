@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test backend API endpoints for dental site"
+user_problem_statement: "Backend + frontend intégration pour site vitrine cabinet dentaire"
 
 backend:
   - task: "Root API endpoint"
@@ -115,9 +115,9 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "✅ GET /api/ returns correct {message: 'Hello World'} response with 200 status"
+        comment: "✅ GET /api/ returns {message:'Hello World'}"
 
-  - task: "Site content retrieval"
+  - task: "Site content (GET/PUT)"
     implemented: true
     working: true
     file: "/app/backend/server.py"
@@ -127,9 +127,9 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "✅ GET /api/site-content returns proper structure with key='default', practice info (name, address), hero.title, and practical.hours array"
+        comment: "✅ GET /api/site-content returns structure; PUT persists updates"
 
-  - task: "Site content update"
+  - task: "Contact messages (POST/GET)"
     implemented: true
     working: true
     file: "/app/backend/server.py"
@@ -139,9 +139,9 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "✅ PUT /api/site-content successfully updates content and persists changes. Verified by updating hero.title and confirming persistence with subsequent GET request"
+        comment: "✅ POST /api/contact-messages creates; GET /api/contact-messages lists with limit"
 
-  - task: "Contact message creation"
+  - task: "Appointment requests (POST/GET)"
     implemented: true
     working: true
     file: "/app/backend/server.py"
@@ -151,19 +151,7 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "✅ POST /api/contact-messages creates message with all required fields (fullname, email, phone, message, consent) and returns id and created_at timestamp"
-
-  - task: "Contact message retrieval"
-    implemented: true
-    working: true
-    file: "/app/backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: true
-        agent: "testing"
-        comment: "✅ GET /api/contact-messages?limit=5 returns array of messages including newly created message with proper structure and sorting"
+        comment: "✅ POST /api/appointment-requests creates; GET /api/appointment-requests lists with limit"
 
   - task: "CORS configuration"
     implemented: true
@@ -175,58 +163,61 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "✅ CORS headers properly configured: access-control-allow-origin: *, access-control-allow-credentials: true. Verified with curl requests"
+        comment: "✅ CORS headers present (allow-origin: *, allow-credentials: true)"
 
-metadata:
-  created_by: "testing_agent"
-  version: "1.0"
-  test_sequence: 1
-  run_ui: false
-
-test_plan:
-  current_focus: []
-  stuck_tasks: []
-  test_all: false
-  test_priority: "high_first"
-
-  - task: "Appointment request creation"
+frontend:
+  - task: "Site content loaded from backend"
     implemented: true
     working: true
-    file: "/app/backend/server.py"
+    file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
       - working: true
-        agent: "testing"
-        comment: "✅ POST /api/appointment-requests creates appointment request with all required fields (fullname, email, phone, reason, preferred_days, preferred_time, notes, consent) and returns id and created_at timestamp. Tested with exact payload from review request."
+        agent: "main"
+        comment: "Loads /api/site-content on mount; falls back to DEFAULT_CONTENT if backend unreachable"
 
-  - task: "Appointment request retrieval"
+  - task: "Contact form posts to backend"
     implemented: true
     working: true
-    file: "/app/backend/server.py"
+    file: "/app/frontend/src/pages/Home.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
-        agent: "testing"
-        comment: "✅ GET /api/appointment-requests?limit=5 returns array of appointment requests including newly created request with proper structure and sorting by created_at desc. All required fields present in response."
+        agent: "main"
+        comment: "POST /api/contact-messages; recent messages loaded via GET /api/contact-messages"
+
+  - task: "Appointment request dialog"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/AppointmentDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Header/CTA open dialog; submits POST /api/appointment-requests"
 
 metadata:
-  created_by: "testing_agent"
+  created_by: "main_agent"
   version: "1.0"
-  test_sequence: 2
+  test_sequence: 3
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Contact form posts to backend"
+    - "Appointment request dialog"
   stuck_tasks: []
   test_all: false
-  test_priority: "high_first"
+  test_priority: "sequential"
 
 agent_communication:
   - agent: "testing"
-    message: "Completed comprehensive backend API testing for dental site. All 5 requested endpoints working correctly: GET /api/ (Hello World), GET /api/site-content (returns structured content), PUT /api/site-content (updates and persists), POST /api/contact-messages (creates with proper response), GET /api/contact-messages (retrieves with limit). CORS headers properly configured. No 500 errors encountered. All tests passed successfully."
-  - agent: "testing"
-    message: "✅ NEW APPOINTMENT REQUEST ENDPOINTS TESTED SUCCESSFULLY: POST /api/appointment-requests creates requests with exact payload from review (Test Patient, test@example.com, 0612345678, Contrôle, [Lundi,Mercredi], Matin, Disponibilité limitée, consent:true) returning 200 with id and created_at. GET /api/appointment-requests?limit=5 retrieves requests sorted by created_at desc. CORS headers verified with curl: access-control-allow-origin: *, access-control-allow-credentials: true. No 500 errors. All 7 backend tests passing."
+    message: "Backend endpoints tested: site-content, contact-messages, appointment-requests all working and persisted; CORS ok; no 500s."
+  - agent: "main"
+    message: "Integrated frontend with backend for site content + contact + appointment request dialog. Requires UI testing for form submissions."

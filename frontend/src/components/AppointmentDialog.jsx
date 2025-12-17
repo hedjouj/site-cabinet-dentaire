@@ -285,7 +285,7 @@ export default function AppointmentDialog({
             <div className="rounded-2xl border border-slate-200 bg-white/70 p-5 backdrop-blur-xl">
               <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
                 <ClipboardList className="h-4 w-4" />
-                Comment a fonctionne
+                Comment ça fonctionne
               </div>
               <ul className="mt-3 space-y-2 text-sm text-slate-700">
                 <li className="flex gap-2">
