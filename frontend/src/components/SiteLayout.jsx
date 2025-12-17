@@ -119,7 +119,7 @@ export const SiteLayout = ({
               onClick={onAppointment}
             >
               <CalendarDays className="h-4 w-4" />
-              Prendre rendez-vous
+              {appointmentLabel}
             </Button>
           </div>
 
