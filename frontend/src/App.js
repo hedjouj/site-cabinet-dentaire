@@ -71,6 +71,7 @@ function App() {
                 phoneE164={content.practice?.phoneE164}
                 phoneDisplay={content.practice?.phoneDisplay}
                 address={content.practice?.address}
+                appointmentLabel={"Demande de rendez-vous"}
                 onAppointment={onAppointment}
               />
             }
