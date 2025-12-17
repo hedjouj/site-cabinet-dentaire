@@ -181,7 +181,7 @@ export default function AppointmentDialog({
               <Label>Préférences de jours</Label>
               <div className="grid gap-2 sm:grid-cols-3">
                 {days.map((d) => {
-                  const checked = (form.watch("preferred_days") || []).includes(d);
+                  const checked = watchedDays.includes(d);
                   return (
                     <button
                       type="button"
