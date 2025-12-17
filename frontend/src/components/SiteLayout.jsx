@@ -38,6 +38,7 @@ export const SiteLayout = ({
   phoneE164,
   phoneDisplay,
   address,
+  appointmentLabel = "Prendre rendez-vous",
   onAppointment,
 }) => {
   const location = useLocation();
@@ -118,7 +119,7 @@ export const SiteLayout = ({
               onClick={onAppointment}
             >
               <CalendarDays className="h-4 w-4" />
-              Prendre rendez-vous
+              {appointmentLabel}
             </Button>
           </div>
 
@@ -201,7 +202,7 @@ export const SiteLayout = ({
                       onClick={onAppointment}
                     >
                       <CalendarDays className="h-4 w-4" />
-                      Prendre rendez-vous
+                      {appointmentLabel}
                     </Button>
                     <Button
                       variant="outline"

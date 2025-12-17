@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { Toaster, toast } from "@/components/ui/sonner";
 import { SiteLayout } from "@/components/SiteLayout";
+import AppointmentDialog from "@/components/AppointmentDialog";
 import Home from "@/pages/Home";
 import Legal from "@/pages/Legal";
 import { api } from "@/lib/api";
@@ -34,15 +35,10 @@ function App() {
     };
   }, []);
 
+  const [appointmentOpen, setAppointmentOpen] = React.useState(false);
+
   const onAppointment = React.useCallback(() => {
-    toast.message("Lien à configurer", {
-      description:
-        "Le bouton « Prendre rendez-vous » est prêt : il suffit d’ajouter l’URL (Doctolib ou autre) quand vous l’aurez.",
-      action: {
-        label: "Ok",
-        onClick: () => {},
-      },
-    });
+    setAppointmentOpen(true);
   }, []);
 
   if (!content) {
@@ -75,6 +71,7 @@ function App() {
                 phoneE164={content.practice?.phoneE164}
                 phoneDisplay={content.practice?.phoneDisplay}
                 address={content.practice?.address}
+                appointmentLabel={"Demande de rendez-vous"}
                 onAppointment={onAppointment}
               />
             }
@@ -88,9 +85,17 @@ function App() {
         </Routes>
       </BrowserRouter>
 
+      <AppointmentDialog
+        open={appointmentOpen}
+        onOpenChange={setAppointmentOpen}
+        practicePhoneE164={content.practice?.phoneE164}
+        practicePhoneDisplay={content.practice?.phoneDisplay}
+      />
+
       <Toaster richColors />
     </div>
   );
+
 }
 
 export default App;

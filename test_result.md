@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test backend API endpoints for dental site"
+user_problem_statement: "Backend + frontend intégration pour site vitrine cabinet dentaire"
 
 backend:
   - task: "Root API endpoint"
@@ -115,9 +115,9 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "✅ GET /api/ returns correct {message: 'Hello World'} response with 200 status"
+        comment: "✅ GET /api/ returns {message:'Hello World'}"
 
-  - task: "Site content retrieval"
+  - task: "Site content (GET/PUT)"
     implemented: true
     working: true
     file: "/app/backend/server.py"
@@ -127,9 +127,9 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "✅ GET /api/site-content returns proper structure with key='default', practice info (name, address), hero.title, and practical.hours array"
+        comment: "✅ GET /api/site-content returns structure; PUT persists updates"
 
-  - task: "Site content update"
+  - task: "Contact messages (POST/GET)"
     implemented: true
     working: true
     file: "/app/backend/server.py"
@@ -139,9 +139,9 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "✅ PUT /api/site-content successfully updates content and persists changes. Verified by updating hero.title and confirming persistence with subsequent GET request"
+        comment: "✅ POST /api/contact-messages creates; GET /api/contact-messages lists with limit"
 
-  - task: "Contact message creation"
+  - task: "Appointment requests (POST/GET)"
     implemented: true
     working: true
     file: "/app/backend/server.py"
@@ -151,19 +151,7 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "✅ POST /api/contact-messages creates message with all required fields (fullname, email, phone, message, consent) and returns id and created_at timestamp"
-
-  - task: "Contact message retrieval"
-    implemented: true
-    working: true
-    file: "/app/backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: true
-        agent: "testing"
-        comment: "✅ GET /api/contact-messages?limit=5 returns array of messages including newly created message with proper structure and sorting"
+        comment: "✅ POST /api/appointment-requests creates; GET /api/appointment-requests lists with limit"
 
   - task: "CORS configuration"
     implemented: true
@@ -175,20 +163,67 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "✅ CORS headers properly configured: access-control-allow-origin: *, access-control-allow-credentials: true. Verified with curl requests"
+        comment: "✅ CORS headers present (allow-origin: *, allow-credentials: true)"
+
+frontend:
+  - task: "Site content loaded from backend"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Loads /api/site-content on mount; falls back to DEFAULT_CONTENT if backend unreachable"
+
+  - task: "Contact form posts to backend"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Home.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "POST /api/contact-messages; recent messages loaded via GET /api/contact-messages"
+      - working: true
+        agent: "testing"
+        comment: "✅ Contact form fully functional: form submission works, success toast appears, new messages appear in 'Messages récents' section. Backend logs confirm POST /api/contact-messages returns 200 OK."
+
+  - task: "Appointment request dialog"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/AppointmentDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Header/CTA open dialog; submits POST /api/appointment-requests"
+      - working: true
+        agent: "testing"
+        comment: "✅ Appointment dialog fully functional: opens correctly, all form fields work (name, phone, email, reason), day selection (Mardi+Vendredi), time dropdown (Matin), RGPD consent, successful submission with toast, dialog closes properly. Backend logs confirm POST /api/appointment-requests returns 200 OK."
 
 metadata:
-  created_by: "testing_agent"
+  created_by: "main_agent"
   version: "1.0"
-  test_sequence: 1
-  run_ui: false
+  test_sequence: 4
+  run_ui: true
 
 test_plan:
   current_focus: []
   stuck_tasks: []
   test_all: false
-  test_priority: "high_first"
+  test_priority: "sequential"
 
 agent_communication:
   - agent: "testing"
-    message: "Completed comprehensive backend API testing for dental site. All 5 requested endpoints working correctly: GET /api/ (Hello World), GET /api/site-content (returns structured content), PUT /api/site-content (updates and persists), POST /api/contact-messages (creates with proper response), GET /api/contact-messages (retrieves with limit). CORS headers properly configured. No 500 errors encountered. All tests passed successfully."
+    message: "Backend endpoints tested: site-content, contact-messages, appointment-requests all working and persisted; CORS ok; no 500s."
+  - agent: "main"
+    message: "Integrated frontend with backend for site content + contact + appointment request dialog. Requires UI testing for form submissions."
+  - agent: "testing"
+    message: "✅ UI testing completed successfully. Both appointment request dialog and contact form are fully functional with proper backend integration. All form validations, submissions, success toasts, and data persistence working correctly. Minor WebSocket console errors (development-related, non-critical). Ready for production use."

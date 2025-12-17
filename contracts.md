@@ -65,10 +65,43 @@ Notes:
 ]
 ```
 
+## 3) Appointment Requests (Demande de rendez-vous)
+### POST `/api/appointment-requests`
+**Body**
+```json
+{
+  "fullname": "...",
+  "email": "... (optionnel)",
+  "phone": "...",
+  "reason": "...",
+  "preferred_days": ["Lundi", "Mercredi"],
+  "preferred_time": "Matin (optionnel)",
+  "notes": "... (optionnel)",
+  "consent": true
+}
+```
+**Réponse 200**
+```json
+{
+  "id": "uuid",
+  "created_at": "2025-08-01T12:00:00Z",
+  "fullname": "...",
+  "email": "...",
+  "phone": "...",
+  "reason": "...",
+  "preferred_days": ["..."],
+  "preferred_time": "...",
+  "notes": "...",
+  "consent": true
+}
+```
+
+### GET `/api/appointment-requests?limit=20`
+Retourne la liste des demandes (triées par `created_at` desc).
+
 ## Intégration Frontend
-- Remplacer `loadContent()/saveContent()` et le stockage `localStorage` par appels API.
 - Au chargement: GET `/api/site-content`.
 - Sauvegarde: PUT `/api/site-content`.
-- Formulaire: POST `/api/contact-messages`.
-- Liste “Messages récents (démo)” devient une liste réelle: GET `/api/contact-messages`.
-- CTA “Prendre rendez-vous”: tant que l’URL n’est pas connue, afficher un toast; plus tard, ajouter `content.practice.appointment_url` et ouvrir le lien.
+- Contact: POST `/api/contact-messages` + listing GET `/api/contact-messages`.
+- Rendez-vous: ouvrir un **dialog “Demande de rendez-vous”** et POST `/api/appointment-requests`.
+- Plus tard: si une URL externe est choisie, ajouter `content.practice.appointment_url` et basculer le CTA vers le lien.
