@@ -6,10 +6,33 @@ import { Toaster, toast } from "@/components/ui/sonner";
 import { SiteLayout } from "@/components/SiteLayout";
 import Home from "@/pages/Home";
 import Legal from "@/pages/Legal";
-import { loadContent } from "@/mock";
+import { api } from "@/lib/api";
+import { DEFAULT_CONTENT } from "@/mock";
 
 function App() {
-  const content = React.useMemo(() => loadContent(), []);
+  const [content, setContent] = React.useState(null);
+
+  React.useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await api.get("/site-content");
+        if (!mounted) return;
+        setContent(res.data.content);
+      } catch (e) {
+        // Fallback to default content if backend is unreachable.
+        console.error(e);
+        setContent(DEFAULT_CONTENT);
+        toast.error("Impossible de charger le contenu", {
+          description:
+            "Le site utilise un contenu de secours (mock). Vérifiez le backend.",
+        });
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const onAppointment = React.useCallback(() => {
     toast.message("Lien à configurer", {
