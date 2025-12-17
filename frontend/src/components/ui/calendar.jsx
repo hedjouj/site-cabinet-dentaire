@@ -5,6 +5,14 @@ import { DayPicker } from "react-day-picker"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
+const CalendarIconLeft = ({ className, ...props }) => (
+  <ChevronLeft className={cn("h-4 w-4", className)} {...props} />
+);
+
+const CalendarIconRight = ({ className, ...props }) => (
+  <ChevronRight className={cn("h-4 w-4", className)} {...props} />
+);
+
 function Calendar({
   className,
   classNames,
