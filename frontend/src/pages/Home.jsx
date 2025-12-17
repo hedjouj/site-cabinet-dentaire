@@ -997,7 +997,7 @@ export default function Home({ content, setContent, onAppointment }) {
                   onClick={onAppointment}
                 >
                   <CalendarDays className="h-4 w-4" />
-                  Prendre rendez-vous
+                  Demande de rendez-vous
                 </Button>
                 <Button
                   variant="outline"
