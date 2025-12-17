@@ -1,52 +1,52 @@
-import { useEffect } from "react";
+import React from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { Toaster, toast } from "@/components/ui/sonner";
+import { SiteLayout } from "@/components/SiteLayout";
+import Home from "@/pages/Home";
+import Legal from "@/pages/Legal";
+import { loadContent } from "@/mock";
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+function App() {
+  const content = React.useMemo(() => loadContent(), []);
 
-  useEffect(() => {
-    helloWorldApi();
+  const onAppointment = React.useCallback(() => {
+    toast.message("Lien à configurer", {
+      description:
+        "Le bouton « Prendre rendez-vous » est prêt : il suffit d’ajouter l’URL (Doctolib ou autre) quand vous l’aurez.",
+      action: {
+        label: "Ok",
+        onClick: () => {},
+      },
+    });
   }, []);
 
   return (
     <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
-
-function App() {
-  return (
-    <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
+          <Route
+            element={
+              <SiteLayout
+                practiceName={content.practice.name}
+                phoneE164={content.practice.phoneE164}
+                phoneDisplay={content.practice.phoneDisplay}
+                address={content.practice.address}
+                onAppointment={onAppointment}
+              />
+            }
+          >
+            <Route
+              path="/"
+              element={<Home onAppointment={onAppointment} />}
+            />
+            <Route path="/mentions-legales" element={<Legal />} />
           </Route>
         </Routes>
       </BrowserRouter>
+
+      <Toaster richColors />
     </div>
   );
 }
