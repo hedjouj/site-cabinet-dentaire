@@ -34,34 +34,49 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/sonner";
 
-import {
-  DEFAULT_CONTENT,
-  loadContent,
-  saveContent,
-  saveMessage,
-  loadMessages,
-} from "@/mock";
+import { api } from "@/lib/api";
 
-function usePersistedContent() {
-  const [content, setContent] = React.useState(() => loadContent());
+function useSiteContentState({ content, setContent }) {
+  const update = React.useCallback(
+    (updater) => {
+      setContent((prev) => {
+        const next = typeof updater === "function" ? updater(prev) : updater;
+        return next;
+      });
+    },
+    [setContent],
+  );
 
-  const update = React.useCallback((updater) => {
-    setContent((prev) => {
-      const next = typeof updater === "function" ? updater(prev) : updater;
-      saveContent(next);
-      return next;
-    });
-  }, []);
+  const save = React.useCallback(async () => {
+    try {
+      await api.put("/site-content", { content });
+      toast.success("Sauvegardé", {
+        description: "Contenu enregistré sur le serveur.",
+      });
+    } catch (e) {
+      console.error(e);
+      toast.error("Sauvegarde impossible", {
+        description: "Vérifiez la connexion au serveur.",
+      });
+    }
+  }, [content]);
 
-  const reset = React.useCallback(() => {
-    saveContent(DEFAULT_CONTENT);
-    setContent(DEFAULT_CONTENT);
-    toast.message("Contenu réinitialisé", {
-      description: "Les textes reviennent à la version par défaut (mock).",
-    });
-  }, []);
+  const reset = React.useCallback(async () => {
+    try {
+      const res = await api.get("/site-content");
+      setContent(res.data.content);
+      toast.message("Contenu rechargé", {
+        description: "Dernière version récupérée depuis le serveur.",
+      });
+    } catch (e) {
+      console.error(e);
+      toast.error("Impossible de recharger", {
+        description: "Vérifiez la connexion au serveur.",
+      });
+    }
+  }, [setContent]);
 
-  return { content, update, reset };
+  return { update, save, reset };
 }
 
 const contactSchema = z.object({
