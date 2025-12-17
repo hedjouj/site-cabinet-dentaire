@@ -318,6 +318,8 @@ async def list_contact_messages(limit: int = Query(default=20, ge=1, le=100)):
         await db.contact_messages.find({}, {"_id": 0})
         .sort("created_at", -1)
         .to_list(limit)
+    )
+    return [ContactMessage(**_parse_dt_fields(d, ["created_at"])) for d in docs]
 
 
 @api_router.post("/appointment-requests", response_model=AppointmentRequest)
@@ -335,12 +337,7 @@ async def list_appointment_requests(limit: int = Query(default=20, ge=1, le=100)
         .sort("created_at", -1)
         .to_list(limit)
     )
-    return [
-        AppointmentRequest(**_parse_dt_fields(d, ["created_at"])) for d in docs
-    ]
-
-    )
-    return [ContactMessage(**_parse_dt_fields(d, ["created_at"])) for d in docs]
+    return [AppointmentRequest(**_parse_dt_fields(d, ["created_at"])) for d in docs]
 
 
 # Include the router in the main app
