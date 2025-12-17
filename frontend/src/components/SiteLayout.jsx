@@ -38,6 +38,7 @@ export const SiteLayout = ({
   phoneE164,
   phoneDisplay,
   address,
+  appointmentLabel = "Prendre rendez-vous",
   onAppointment,
 }) => {
   const location = useLocation();
