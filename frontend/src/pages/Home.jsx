@@ -486,16 +486,7 @@ export default function Home({ content, setContent, onAppointment }) {
                 {content.services.intro}
               </p>
             </div>
-            <Button
-              variant="outline"
-              className="gap-2"
-              onClick={() => {
-                saveContent(content);
-                toast.success("Sauvegardé", {
-                  description: "Les changements sont conservés localement.",
-                });
-              }}
-            >
+            <Button variant="outline" className="gap-2" onClick={save}>
               <Save className="h-4 w-4" />
               Sauvegarder
             </Button>
