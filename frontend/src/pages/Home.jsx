@@ -169,10 +169,21 @@ export default function Home({ content, setContent, onAppointment }) {
     return `https://www.google.com/maps?q=${q}&output=embed`;
   }, [address]);
 
-  const onSubmit = form.handleSubmit((data) => {
-    const entry = {
-      id: crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()),
-      ...data,
+  const onSubmit = form.handleSubmit(async (data) => {
+    try {
+      const res = await api.post("/contact-messages", data);
+      setMessages((prev) => [res.data, ...prev].slice(0, 20));
+      form.reset();
+      toast.success("Message envoyé", {
+        description: "Votre demande a bien été transmise au cabinet.",
+      });
+    } catch (e) {
+      console.error(e);
+      toast.error("Envoi impossible", {
+        description: "Merci de réessayer ou d'appeler le cabinet.",
+      });
+    }
+  });
 
   React.useEffect(() => {
     let mounted = true;
@@ -196,17 +207,6 @@ export default function Home({ content, setContent, onAppointment }) {
       mounted = false;
     };
   }, []);
-
-      createdAt: new Date().toISOString(),
-    };
-    const next = saveMessage(entry);
-    setMessages(next);
-    form.reset();
-    toast.success("Message enregistré", {
-      description:
-        "En mode démo, le message est sauvegardé localement (mock).",
-    });
-  });
 
   return (
     <div>
