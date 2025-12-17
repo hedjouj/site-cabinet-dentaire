@@ -35,15 +35,10 @@ function App() {
     };
   }, []);
 
+  const [appointmentOpen, setAppointmentOpen] = React.useState(false);
+
   const onAppointment = React.useCallback(() => {
-    toast.message("Lien à configurer", {
-      description:
-        "Le bouton « Prendre rendez-vous » est prêt : il suffit d’ajouter l’URL (Doctolib ou autre) quand vous l’aurez.",
-      action: {
-        label: "Ok",
-        onClick: () => {},
-      },
-    });
+    setAppointmentOpen(true);
   }, []);
 
   if (!content) {
