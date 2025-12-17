@@ -45,6 +45,25 @@ function App() {
     });
   }, []);
 
+  if (!content) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="mx-auto max-w-6xl px-4 py-14 md:px-6">
+          <div className="rounded-2xl border border-slate-200 bg-white/70 p-8 backdrop-blur-xl">
+            <div className="text-sm font-medium text-slate-900">Chargement…</div>
+            <div className="mt-2 text-sm text-slate-600">
+              Récupération du contenu du site.
+            </div>
+            <div className="mt-6 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+              <div className="h-full w-1/3 animate-pulse rounded-full bg-slate-900/20" />
+            </div>
+          </div>
+        </div>
+        <Toaster richColors />
+      </div>
+    );
+  }
+
   return (
     <div>
       <BrowserRouter>
@@ -52,19 +71,19 @@ function App() {
           <Route
             element={
               <SiteLayout
-                practiceName={content.practice.name}
-                phoneE164={content.practice.phoneE164}
-                phoneDisplay={content.practice.phoneDisplay}
-                address={content.practice.address}
+                practiceName={content.practice?.name}
+                phoneE164={content.practice?.phoneE164}
+                phoneDisplay={content.practice?.phoneDisplay}
+                address={content.practice?.address}
                 onAppointment={onAppointment}
               />
             }
           >
             <Route
               path="/"
-              element={<Home onAppointment={onAppointment} />}
+              element={<Home content={content} setContent={setContent} onAppointment={onAppointment} />}
             />
-            <Route path="/mentions-legales" element={<Legal />} />
+            <Route path="/mentions-legales" element={<Legal content={content} />} />
           </Route>
         </Routes>
       </BrowserRouter>
