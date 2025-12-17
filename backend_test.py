@@ -220,6 +220,96 @@ def main():
     else:
         print("❌ Expected array of messages")
     
+    # Test 6: POST /api/appointment-requests
+    print("\n" + "="*80)
+    print("TEST 6: Create appointment request")
+    
+    appointment_payload = {
+        "fullname": "Test Patient",
+        "email": "test@example.com",
+        "phone": "0612345678",
+        "reason": "Contrôle",
+        "preferred_days": ["Lundi", "Mercredi"],
+        "preferred_time": "Matin",
+        "notes": "Disponibilité limitée",
+        "consent": True
+    }
+    
+    appointment_result = test_api_endpoint("POST", "/appointment-requests", data=appointment_payload, 
+                                        description="Create new appointment request")
+    test_results.append(("POST /api/appointment-requests", appointment_result is not False))
+    
+    created_appointment_id = None
+    if appointment_result and isinstance(appointment_result, dict):
+        # Validate response structure
+        required_fields = ["id", "created_at"]
+        for field in required_fields:
+            if field in appointment_result:
+                print(f"✅ Field '{field}' present in response")
+            else:
+                print(f"❌ Missing field in response: {field}")
+        
+        # Validate all input fields are returned
+        input_fields = ["fullname", "email", "phone", "reason", "preferred_days", "preferred_time", "notes", "consent"]
+        for field in input_fields:
+            if field in appointment_result:
+                print(f"✅ Input field '{field}' present in response")
+            else:
+                print(f"❌ Missing input field in response: {field}")
+        
+        created_appointment_id = appointment_result.get("id")
+        print(f"Created appointment ID: {created_appointment_id}")
+    
+    # Test 7: GET /api/appointment-requests
+    print("\n" + "="*80)
+    print("TEST 7: List appointment requests")
+    
+    appointments_result = test_api_endpoint("GET", "/appointment-requests?limit=5", 
+                                          description="Get appointment requests with limit")
+    test_results.append(("GET /api/appointment-requests", appointments_result is not False))
+    
+    if appointments_result and isinstance(appointments_result, list):
+        print(f"✅ Received {len(appointments_result)} appointment requests")
+        
+        # Check if our created appointment is in the list
+        if created_appointment_id:
+            found_appointment = False
+            for appt in appointments_result:
+                if appt.get("id") == created_appointment_id:
+                    found_appointment = True
+                    print("✅ Created appointment request found in list")
+                    break
+            
+            if not found_appointment:
+                print("❌ Created appointment request not found in list")
+        
+        # Validate appointment structure
+        if appointments_result:
+            sample_appt = appointments_result[0]
+            required_fields = ["id", "created_at", "fullname", "phone", "reason", "consent"]
+            for field in required_fields:
+                if field in sample_appt:
+                    print(f"✅ Appointment field '{field}' present")
+                else:
+                    print(f"❌ Missing appointment field: {field}")
+        
+        # Verify sorting by created_at desc (most recent first)
+        if len(appointments_result) > 1:
+            is_sorted = True
+            for i in range(len(appointments_result) - 1):
+                current_time = appointments_result[i].get("created_at", "")
+                next_time = appointments_result[i + 1].get("created_at", "")
+                if current_time < next_time:
+                    is_sorted = False
+                    break
+            
+            if is_sorted:
+                print("✅ Appointment requests properly sorted by created_at desc")
+            else:
+                print("❌ Appointment requests not properly sorted")
+    else:
+        print("❌ Expected array of appointment requests")
+    
     # Summary
     print("\n" + "="*80)
     print("🏁 TEST SUMMARY")
