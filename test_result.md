@@ -184,11 +184,14 @@ frontend:
     file: "/app/frontend/src/pages/Home.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "POST /api/contact-messages; recent messages loaded via GET /api/contact-messages"
+      - working: true
+        agent: "testing"
+        comment: "✅ Contact form fully functional: form submission works, success toast appears, new messages appear in 'Messages récents' section. Backend logs confirm POST /api/contact-messages returns 200 OK."
 
   - task: "Appointment request dialog"
     implemented: true
@@ -196,11 +199,14 @@ frontend:
     file: "/app/frontend/src/components/AppointmentDialog.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Header/CTA open dialog; submits POST /api/appointment-requests"
+      - working: true
+        agent: "testing"
+        comment: "✅ Appointment dialog fully functional: opens correctly, all form fields work (name, phone, email, reason), day selection (Mardi+Vendredi), time dropdown (Matin), RGPD consent, successful submission with toast, dialog closes properly. Backend logs confirm POST /api/appointment-requests returns 200 OK."
 
 metadata:
   created_by: "main_agent"
