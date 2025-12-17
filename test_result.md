@@ -211,13 +211,11 @@ frontend:
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 3
-  run_ui: false
+  test_sequence: 4
+  run_ui: true
 
 test_plan:
-  current_focus:
-    - "Contact form posts to backend"
-    - "Appointment request dialog"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "sequential"
@@ -227,3 +225,5 @@ agent_communication:
     message: "Backend endpoints tested: site-content, contact-messages, appointment-requests all working and persisted; CORS ok; no 500s."
   - agent: "main"
     message: "Integrated frontend with backend for site content + contact + appointment request dialog. Requires UI testing for form submissions."
+  - agent: "testing"
+    message: "✅ UI testing completed successfully. Both appointment request dialog and contact form are fully functional with proper backend integration. All form validations, submissions, success toasts, and data persistence working correctly. Minor WebSocket console errors (development-related, non-critical). Ready for production use."
