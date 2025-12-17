@@ -173,6 +173,30 @@ export default function Home({ content, setContent, onAppointment }) {
     const entry = {
       id: crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()),
       ...data,
+
+  React.useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await api.get("/contact-messages", { params: { limit: 20 } });
+        if (!mounted) return;
+        setMessages(res.data);
+      } catch (e) {
+        console.error(e);
+        if (!mounted) return;
+        setMessages([]);
+        toast.error("Impossible de charger les messages", {
+          description: "Vérifiez la connexion au serveur.",
+        });
+      } finally {
+        if (mounted) setLoadingMessages(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
       createdAt: new Date().toISOString(),
     };
     const next = saveMessage(entry);
