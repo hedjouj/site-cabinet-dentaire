@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { Toaster, toast } from "@/components/ui/sonner";
 import { SiteLayout } from "@/components/SiteLayout";
+import AppointmentDialog from "@/components/AppointmentDialog";
 import Home from "@/pages/Home";
 import Legal from "@/pages/Legal";
 import { api } from "@/lib/api";
