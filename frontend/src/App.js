@@ -88,6 +88,14 @@ function App() {
       <Toaster richColors />
     </div>
   );
+
+      <AppointmentDialog
+        open={appointmentOpen}
+        onOpenChange={setAppointmentOpen}
+        practicePhoneE164={content.practice?.phoneE164}
+        practicePhoneDisplay={content.practice?.phoneDisplay}
+      />
+
 }
 
 export default App;
